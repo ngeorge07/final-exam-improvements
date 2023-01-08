@@ -1,0 +1,48 @@
+.wrapper_menu {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 500ms ease-out;
+}
+
+.wrapper_menu.open {
+  transform: rotate(-45deg);
+}
+
+.line_menu {
+  background-color: #fff;
+  border-radius: 5px;
+  width: 100%;
+  height: 6px;
+}
+
+.line_menu.half {
+  width: 50%;
+}
+
+.line_menu.start {
+  transition: transform 330ms cubic-bezier(0.54, -0.81, 0.57, 0.57);
+  transform-origin: right;
+}
+
+.open .line_menu.start {
+  transform: rotate(-90deg) translateX(3px);
+}
+
+.line_menu.end {
+  align-self: flex-end;
+  transition: transform 330ms cubic-bezier(0.54, -0.81, 0.57, 0.57);
+  transform-origin: left;
+}
+
+.open .line_menu.end {
+  transform: rotate(-90deg) translateX(-3px);
+}
+
+.open .line_menu {
+  background-color: var(--chakra-colors-portland_orange);
+  transition: background-color 500ms ease;
+}
