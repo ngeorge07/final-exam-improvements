@@ -117,15 +117,15 @@ export default function Header() {
               aria-label={user ? 'sign-out' : 'sign-in'}
               variant="outline"
               border="none"
-              outlineColor={user ? 'venetian_red' : 'white'}
-              color={user ? 'venetian_red' : 'white'}
+              outlineColor={user ? 'portland_orange' : 'white'}
+              color={user ? 'portland_orange' : 'white'}
               _hover={{
                 backgroundColor: useColorModeValue(
                   'gray.200',
                   'blackAlpha.400'
                 ),
-                outlineColor: user ? 'red.600' : 'inchworm',
-                color: user ? 'red.600' : 'inchworm',
+                outlineColor: user ? 'orange.600' : 'inchworm',
+                color: user ? 'orange.600' : 'inchworm',
               }}
               _active={{ backgroundColor: 'none' }}
               fontSize={18}

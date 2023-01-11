@@ -287,9 +287,9 @@ export default function Profile() {
         <Button
           w={'28'}
           color={'white'}
-          backgroundColor={'venetian_red'}
+          backgroundColor={'portland_orange'}
           _hover={{
-            backgroundColor: 'red.500',
+            backgroundColor: 'orange.600',
             transition: 'background-color 0.2s cubic-bezier(0.73, 0, 0.38, 1)',
           }}
           onClick={() => supabase.auth.signOut()}
