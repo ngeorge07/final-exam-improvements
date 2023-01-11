@@ -1,4 +1,5 @@
 import { Flex, Heading, VStack } from '@chakra-ui/react';
+import { useUser } from '@supabase/auth-helpers-react';
 import NextLink from 'next/link';
 import HeroLink from '../chakra/HeroLink';
 
@@ -10,6 +11,7 @@ export default function PropositionSection({
 }) {
   const toast = useToast();
   const id = 'info-toast';
+  const user = useUser();
 
   return (
     <VStack w="fit-content" zIndex={2} mt={isHome ? 20 : 40}>
@@ -32,26 +34,13 @@ export default function PropositionSection({
         )}
 
         <HeroLink
-          as={isHome ? NextLink : 'button'}
-          href={isHome ? '/business' : '#'}
+          as={NextLink}
+          href={isHome ? '/business' : user ? '/profile' : '/login'}
           variant="primary"
           w={
             isHome
               ? { base: '98%', md: '50%' }
               : { base: '98%', sm: '70%', md: '80%' }
-          }
-          onClick={() =>
-            !isHome &&
-            !toast.isActive(id) &&
-            toast({
-              id,
-              title: 'Hi, the developer here :)',
-              description:
-                'This is a prototype website. The section you are trying to access is not available yet. Please come back in 4 weeks.',
-              status: 'info',
-              duration: 4500,
-              isClosable: true,
-            })
           }
         >
           {linkText}

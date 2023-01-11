@@ -1,11 +1,15 @@
 import { Heading, Link, Text } from '@chakra-ui/react';
+import { useUser } from '@supabase/auth-helpers-react';
+import NextLink from 'next/link';
+import Worm from '../components/SVGs/Worm';
 import HeroImage from '../components/cards/HeroImage';
 import HeroLink from '../components/chakra/HeroLink';
-import Worm from '../components/SVGs/Worm';
 import CarouselContainer from '../components/templates/CarouselContainer';
 import MainSection from '../components/templates/MainSection';
 
-export default function business() {
+export default function Business() {
+  const user = useUser();
+
   return (
     <>
       <HeroImage
@@ -40,8 +44,8 @@ export default function business() {
         </video>
 
         <HeroLink
-          as={'button'}
-          href="/business"
+          as={NextLink}
+          href={user ? '/profile' : '/login'}
           variant="primary"
           alignSelf="center"
           maxW={{ base: '300px', md: '280px' }}

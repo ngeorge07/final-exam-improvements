@@ -61,7 +61,9 @@ export default function Profile() {
             setWebsite(data.website);
             data.avatar_url
               ? setAvatarUrl(data.avatar_url)
-              : setAvatarUrl('https://api.dicebear.com/5.x/identicon/svg');
+              : setAvatarUrl(
+                  `https://api.dicebear.com/5.x/identicon/svg?seed=${data.email}`
+                );
             setDescriptionHeadline(data.description_headline);
             setDescription(data.description);
           }

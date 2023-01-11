@@ -1,11 +1,15 @@
 import { Heading, Link, Text } from '@chakra-ui/react';
+import { useUser } from '@supabase/auth-helpers-react';
+import NextLink from 'next/link';
+import About from '../components/SVGs/About';
 import HeroImage from '../components/cards/HeroImage';
 import HeroLink from '../components/chakra/HeroLink';
-import About from '../components/SVGs/About';
 import CarouselContainer from '../components/templates/CarouselContainer';
 import MainSection from '../components/templates/MainSection';
 
-export default function creator() {
+export default function Creator() {
+  const user = useUser();
+
   return (
     <>
       <HeroImage
@@ -40,7 +44,8 @@ export default function creator() {
         </Text>
 
         <HeroLink
-          as={'button'}
+          as={NextLink}
+          href={user ? '/profile' : '/login'}
           variant="primary"
           alignSelf="center"
           maxW={{ base: '300px', md: '280px' }}
