@@ -8,19 +8,17 @@ const Login = () => {
   const user = useUser();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   user && router.push('/profile');
-  // }, [user, router]);
+  user && router.push('/profile');
 
   return (
     <Box pt={200} mx={50}>
       <Auth
-        redirectTo="http://localhost:3000/profile"
+        redirectTo="https://final-exam-improvements.vercel.app/profile"
         supabaseClient={supabaseClient}
         providers={['google', 'linkedin']}
         socialLayout="horizontal"
         theme="dark"
-        view="sign_up"
+        view="sign_in"
         appearance={{
           theme: ThemeSupa,
         }}

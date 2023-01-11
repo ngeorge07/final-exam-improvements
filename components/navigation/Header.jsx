@@ -12,9 +12,15 @@ import {
   useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import NextLink from 'next/link';
 import { useRef } from 'react';
-import { IoMoon, IoSunny } from 'react-icons/io5';
+import {
+  IoLockClosedOutline,
+  IoLockOpenOutline,
+  IoMoon,
+  IoSunny,
+} from 'react-icons/io5';
 import IconHamburger from '../SVGs/IconHamburger';
 import Logo from '../SVGs/Logo';
 
@@ -22,6 +28,8 @@ export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef();
+  const user = useUser();
+  const supabase = useSupabaseClient();
 
   return (
     <Flex
@@ -90,7 +98,49 @@ export default function Header() {
               For businesses
             </Link>
 
+            {user && (
+              <Link
+                as={NextLink}
+                href="/profile"
+                variant="menu-link"
+                onClick={onClose}
+              >
+                {' '}
+                Your profile
+              </Link>
+            )}
+
             <Button
+              w={'36'}
+              as={NextLink}
+              href="/login"
+              aria-label={user ? 'sign-out' : 'sign-in'}
+              variant="outline"
+              border="none"
+              outlineColor={user ? 'venetian_red' : 'white'}
+              color={user ? 'venetian_red' : 'white'}
+              _hover={{
+                backgroundColor: useColorModeValue(
+                  'gray.200',
+                  'blackAlpha.400'
+                ),
+                outlineColor: user ? 'red.600' : 'inchworm',
+                color: user ? 'red.600' : 'inchworm',
+              }}
+              _active={{ backgroundColor: 'none' }}
+              fontSize={18}
+              mt={5}
+              rightIcon={user ? <IoLockOpenOutline /> : <IoLockClosedOutline />}
+              onClick={() => {
+                onClose();
+                user && supabase.auth.signOut();
+              }}
+            >
+              {user ? 'Sign out' : 'Sign in'}
+            </Button>
+
+            <Button
+              w={'36'}
               aria-label="color-mode"
               onClick={toggleColorMode}
               variant="outline"

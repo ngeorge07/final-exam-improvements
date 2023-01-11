@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -13,8 +14,11 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
+import plunk from '../lib/plunkClient';
+
 export default function Profile() {
   const [editMode, setEditMode] = useState(false);
   const supabase = useSupabaseClient();
@@ -28,6 +32,8 @@ export default function Profile() {
 
   const cardBg = useColorModeValue('platinum', 'black');
   const accentTextColor = useColorModeValue('american_green', 'inchworm');
+
+  const router = useRouter();
 
   useEffect(() => {
     async function getProfile() {
@@ -46,6 +52,11 @@ export default function Profile() {
           }
 
           if (data) {
+            plunk.events.publish({
+              email: data.email,
+              event: 'account-created',
+            });
+
             setFullname(data.full_name);
             setWebsite(data.website);
             data.avatar_url
@@ -60,11 +71,13 @@ export default function Profile() {
         } finally {
           setLoading(false);
         }
+      } else {
+        router.push('/login');
       }
     }
 
     getProfile();
-  }, [user, supabase, editMode]);
+  }, [user, supabase, editMode, router]);
 
   async function updateProfile({
     full_name,
@@ -88,7 +101,6 @@ export default function Profile() {
 
       let { error } = await supabase.from('profiles').upsert(updates);
       if (error) throw error;
-      alert('Profile updated!');
     } catch (error) {
       alert('Error updating the data!');
       console.log(error);
@@ -96,29 +108,6 @@ export default function Profile() {
       setLoading(false);
     }
   }
-
-  // const { data } = await supabaseClient
-  //   .from('profiles')
-  //   .select('email')
-  //   .limit(1);
-
-  // await fetch('https://api.useplunk.com/v1/contacts', {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     Authorization: process.env.NEXT_PUBLIC_PLUNK_SECRET_KEY, // Put your API key here
-  //   },
-  // });
-
-  // await plunk.events.publish({
-  //   email: data[0].email,
-  //   event: 'account-created',
-  // });
-
-  // setData(data);
-
-  // Only run query once user is logged in.
-  // user ? loadData() : router.push('/login');
 
   return (
     user && (
@@ -144,7 +133,7 @@ export default function Profile() {
               {editMode ? (
                 <Input
                   variant="outline"
-                  placeholder="Outline"
+                  placeholder="Full name"
                   value={full_name || ''}
                   onChange={(e) => setFullname(e.target.value)}
                 />
@@ -176,14 +165,14 @@ export default function Profile() {
               <>
                 <Input
                   variant="outline"
-                  placeholder="Outline"
+                  placeholder="Description title"
                   value={description_headline || ''}
                   onChange={(e) => setDescriptionHeadline(e.target.value)}
                 />
 
                 <Input
                   variant="outline"
-                  placeholder="Outline"
+                  placeholder="Description"
                   value={description || ''}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -251,29 +240,60 @@ export default function Profile() {
           </CardFooter>
         </Card>
 
-        <button onClick={() => supabase.auth.signOut()}>Sign out</button>
-
-        <button onClick={() => setEditMode((prev) => !prev)}>
-          {editMode ? 'Cancel' : 'Edit mode'}
-        </button>
-        {editMode && (
-          <button
-            className="button primary block"
-            onClick={() => {
-              updateProfile({
-                full_name,
-                website,
-                avatar_url,
-                description_headline,
-                description,
-              });
-              setEditMode((prev) => !prev);
+        <Flex gap={10} mt={5} mb={50}>
+          <Button
+            w={'28'}
+            color={'white'}
+            backgroundColor={editMode ? 'venetian_red' : 'american_green'}
+            _hover={{
+              backgroundColor: editMode ? 'red.500' : 'may_green',
+              transition:
+                'background-color 0.2s cubic-bezier(0.73, 0, 0.38, 1)',
             }}
-            disabled={loading}
+            onClick={() => setEditMode((prev) => !prev)}
           >
-            {loading ? 'Loading ...' : 'Update'}
-          </button>
-        )}
+            {editMode ? 'Cancel' : 'Edit mode'}
+          </Button>
+
+          {editMode && (
+            <Button
+              w={'28'}
+              color={'white'}
+              backgroundColor={'american_green'}
+              _hover={{
+                backgroundColor: 'may_green',
+                transition:
+                  'background-color 0.2s cubic-bezier(0.73, 0, 0.38, 1)',
+              }}
+              onClick={() => {
+                updateProfile({
+                  full_name,
+                  website,
+                  avatar_url,
+                  description_headline,
+                  description,
+                });
+                setEditMode((prev) => !prev);
+              }}
+              disabled={loading}
+            >
+              {loading ? 'Loading ...' : 'Update'}
+            </Button>
+          )}
+        </Flex>
+
+        <Button
+          w={'28'}
+          color={'white'}
+          backgroundColor={'venetian_red'}
+          _hover={{
+            backgroundColor: 'red.500',
+            transition: 'background-color 0.2s cubic-bezier(0.73, 0, 0.38, 1)',
+          }}
+          onClick={() => supabase.auth.signOut()}
+        >
+          Sign out
+        </Button>
       </Flex>
     )
   );
