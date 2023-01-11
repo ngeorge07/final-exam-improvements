@@ -1,50 +1,32 @@
 import { Box } from '@chakra-ui/react';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { Auth, ThemeSupa } from '@supabase/auth-ui-react';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
-const LoginPage = () => {
+const Login = () => {
   const supabaseClient = useSupabaseClient();
   const user = useUser();
-  const [data, setData] = useState();
+  const router = useRouter();
 
-  useEffect(() => {
-    async function loadData() {
-      const { data } = await supabaseClient.from('test').select('*');
-      setData(data);
-    }
-    // Only run query once user is logged in.
-    if (user) loadData();
-  }, [user]);
+  // useEffect(() => {
+  //   user && router.push('/profile');
+  // }, [user, router]);
 
   return (
     <Box pt={200} mx={50}>
-      {!user ? (
-        <Auth
-          redirectTo="http://localhost:3000/"
-          supabaseClient={supabaseClient}
-          providers={['google', 'github']}
-          socialLayout="horizontal"
-          appearance={{
-            theme: ThemeSupa,
-            style: {
-              container: {},
-            },
-          }}
-        />
-      ) : (
-        <>
-          <button onClick={() => supabaseClient.auth.signOut()}>
-            Sign out
-          </button>
-          <p>user:</p>
-          <pre>{JSON.stringify(user, null, 2)}</pre>
-          <p>client-side data fetching with RLS</p>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </>
-      )}
+      <Auth
+        redirectTo="http://localhost:3000/profile"
+        supabaseClient={supabaseClient}
+        providers={['google', 'linkedin']}
+        socialLayout="horizontal"
+        theme="dark"
+        view="sign_up"
+        appearance={{
+          theme: ThemeSupa,
+        }}
+      />
     </Box>
   );
 };
 
-export default LoginPage;
+export default Login;
